@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sorting Algorithm Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Sorting Algorithm Visualizer</h1>
+
+    <div class="controls">
+        <button onclick="generateArray()">Generate Array</button>
+
+        <select id="algo">
+            <option value="bubble">Bubble Sort</option>
+            <option value="selection">Selection Sort</option>
+        </select>
+
+        <label>Speed:</label>
+        <input type="range" min="10" max="200" value="50" id="speed">
+
+        <button onclick="startSort()">Sort</button>
+    </div>
+
+    <div class="stats">
+        <p>Comparisons: <span id="comp">0</span></p>
+        <p>Swaps: <span id="swap">0</span></p>
+    </div>
+
+    <div id="array"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
