@@ -162,7 +162,7 @@ function markSorted() {
     }
     isSorted = true;
 
-    // 🔥 SEND DATA TO BACKEND
+
     fetch("https://sorting-backend-zc9n.onrender.com/save", {
         method: "POST",
         headers: {
