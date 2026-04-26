@@ -20,3 +20,6 @@ Open index.html in a browser or use Live Server in VS Code.
 - Add more algorithms (Insertion, Merge, Quick Sort)
 - Add side-by-side comparison
 - Improve UI/UX further
+
+## Live Demo
+https://snehangshu-mahapatra.github.io/sorting-visualizer/
