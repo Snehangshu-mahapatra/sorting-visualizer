@@ -1,34 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Sorting Algorithm Visualizer</title>
+    <title>Sorting Visualizer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Sorting Algorithm Visualizer</h1>
+<h1>Sorting Visualizer</h1>
 
-    <div class="controls">
-        <button onclick="generateArray()">Generate Array</button>
+<div class="controls">
+    <button onclick="generateArray()">Generate</button>
 
-        <select id="algo">
-            <option value="bubble">Bubble Sort</option>
-            <option value="selection">Selection Sort</option>
-        </select>
+    <select id="algo">
+        <option value="bubble">Bubble Sort</option>
+        <option value="selection">Selection Sort</option>
+    </select>
 
-        <label>Speed:</label>
-        <input type="range" min="10" max="200" value="50" id="speed">
+    <input type="range" id="speed" min="10" max="200" value="50">
 
-        <button onclick="startSort()">Sort</button>
+    <button onclick="startSort()">Start</button>
+</div>
+
+<div id="array"></div>
+
+<div class="stats">
+    Comparisons: <span id="comp">0</span> |
+    Swaps: <span id="swap">0</span>
+</div>
+
+<br>
+<button id="runsBtn" onclick="loadRuns()">View Past Runs</button>
+<button id="analyticsBtn" onclick="loadAnalytics()">Show Analytics</button>
+<button id="compareBtn" onclick="loadComparisons()">View Comparisons</button>
+<div id="comparisons"></div>
+<div id="history"></div>
+<div id="analytics"></div>
+
+<h2>Comparison Mode</h2>
+
+<div style="display: flex; justify-content: space-around; gap: 20px;">
+
+    <div>
+        <h3>Bubble Sort</h3>
+        <div id="array1" class="arrayBox"></div>
+        <p>Comp: <span id="comp1">0</span> | Swaps: <span id="swap1">0</span></p>
     </div>
 
-    <div class="stats">
-        <p>Comparisons: <span id="comp">0</span></p>
-        <p>Swaps: <span id="swap">0</span></p>
+    <div>
+        <h3>Selection Sort</h3>
+        <div id="array2" class="arrayBox"></div>
+        <p>Comp: <span id="comp2">0</span> | Swaps: <span id="swap2">0</span></p>
     </div>
 
-    <div id="array"></div>
+</div>
 
-    <script src="script.js"></script>
+<br>
+<button onclick="compareMode()">Compare Algorithms</button>
+
+<script src="script.js"></script>
+
 </body>
 </html>
