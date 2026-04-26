@@ -1,3 +1,4 @@
+alert("JS Loaded");
 let arr = [];
 let comparisons = 0;
 let swaps = 0;
