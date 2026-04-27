@@ -4,6 +4,9 @@ let swaps = 0;
 let isSorted = false;
 let baseArray = [];
 
+let isSorting = false;
+let isComparing = false;
+let finished = 0;
 
 function generateArray() {
     arr = [];
@@ -72,25 +75,27 @@ async function bubbleSort() {
     }
 
     markSorted();
+    isSorting = false; 
 }
 
 function loadRuns() {
     let container = document.getElementById("history");
     let btn = document.getElementById("runsBtn");
 
-    // 🔁 Toggle OFF
-    if (container.innerHTML !== "") {
+    viewState.runs = !viewState.runs;
+
+    if (!viewState.runs) {
         container.innerHTML = "";
         btn.innerText = "View Past Runs";
         return;
     }
 
-    // 🔁 Toggle ON
     btn.innerText = "Hide Past Runs";
 
     fetch("https://sorting-backend-zc9n.onrender.com/runs")
     .then(res => res.json())
     .then(data => {
+
         let output = "<h3>Past Runs</h3>";
         output += "<table><tr><th>Algorithm</th><th>Size</th><th>Comparisons</th><th>Swaps</th></tr>";
 
@@ -104,7 +109,10 @@ function loadRuns() {
         });
 
         output += "</table>";
-        container.innerHTML = output;
+
+        if (viewState.runs) {
+            container.innerHTML = output;
+        }
     })
     .catch(err => console.log(err));
 }
@@ -152,6 +160,7 @@ async function selectionSort() {
     }
 
     markSorted();
+    isSorting = false; 
 }
 
 function markSorted() {
@@ -181,14 +190,17 @@ function markSorted() {
 }
 
 function startSort() {
+    if (isSorting) return;   // 🚫 block new sort
+
     if (isSorted) {
         alert("Array already sorted. Generate a new array.");
         return;
     }
 
+    isSorting = true;  // 🔒 lock sorting
+
     let algo = document.getElementById("algo").value;
 
-    // reset stats before sorting
     comparisons = 0;
     swaps = 0;
     updateStats();
@@ -204,14 +216,14 @@ function loadAnalytics() {
     let container = document.getElementById("analytics");
     let btn = document.getElementById("analyticsBtn");
 
-    // 🔁 Toggle OFF
-    if (container.innerHTML !== "") {
+    viewState.analytics = !viewState.analytics;
+
+    if (!viewState.analytics) {
         container.innerHTML = "";
         btn.innerText = "Show Analytics";
         return;
     }
 
-    // 🔁 Toggle ON
     btn.innerText = "Hide Analytics";
 
     fetch("https://sorting-backend-zc9n.onrender.com/runs")
@@ -249,7 +261,10 @@ function loadAnalytics() {
         }
 
         output += "</table>";
-        container.innerHTML = output;
+
+        if (viewState.analytics) {
+            container.innerHTML = output;
+        }
     })
     .catch(err => console.log(err));
 }
@@ -314,6 +329,8 @@ async function bubbleSortCompare(arr, containerId, compId, swapId) {
 
             bars[j].classList.remove("active");
             bars[j+1].classList.remove("active");
+            finished++;
+            if (finished === 2) finishComparison();
         }
     }
 }
@@ -360,10 +377,16 @@ async function selectionSortCompare(arr, containerId, compId, swapId) {
         }
 
         bars[min].classList.remove("active");
+        finished++;
+        if (finished === 2) finishComparison();
     }
 }
 
 function compareMode() {
+    if (isComparing) return;
+    isComparing = true; 
+    finished = 0;
+
     generateBaseArray();
 
     let arr1 = [...baseArray];
@@ -374,6 +397,7 @@ function compareMode() {
 
     setTimeout(() => {
         saveComparisonRun();
+        isComparing = false;
     }, 2000); //delay
 }
 
@@ -402,17 +426,13 @@ function loadComparisons() {
     let container = document.getElementById("comparisons");
     let btn = document.getElementById("compareBtn");
 
-    if (container.innerHTML !== "") {
+    viewState.comparisons = !viewState.comparisons;
+
+    if (!viewState.comparisons) {
         container.innerHTML = "";
         btn.innerText = "View Comparisons";
         return;
     }
-
-    document.getElementById("history").innerHTML = "";
-    document.getElementById("analytics").innerHTML = "";
-
-    document.getElementById("runsBtn").innerText = "View Past Runs";
-    document.getElementById("analyticsBtn").innerText = "Show Analytics";
 
     btn.innerText = "Hide Comparisons";
 
@@ -437,7 +457,21 @@ function loadComparisons() {
 
         output += "</table>";
 
-        container.innerHTML = output;
+        if (viewState.comparisons) {
+            container.innerHTML = output;
+        }
     })
     .catch(err => console.log(err));
 }
+
+function finishComparison() {
+    saveComparisonRun();
+    isComparing = false;
+    finished = 0;
+}
+
+let viewState = {
+    runs: false,
+    analytics: false,
+    comparisons: false
+};
