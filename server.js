@@ -75,4 +75,7 @@ app.listen(PORT, () => {
     console.log("Server running on port", PORT);
 });
 
-app.use(cors());
+app.use(cors({
+  origin: "https://sorting-backend-zc9n.onrender.com",
+  credentials: true
+}));
