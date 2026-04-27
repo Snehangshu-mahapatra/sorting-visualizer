@@ -39,7 +39,21 @@ app.post("/save", async (req, res) => {
     try {
         const run = new Run(req.body);
         await run.save();
+
+        // latest 10 runs
+        const count = await Run.countDocuments();
+
+        if (count > 10) {
+            const oldest = await Run.find()
+                .sort({ timestamp: 1 }) // oldest first
+                .limit(count - 10);
+
+            const ids = oldest.map(doc => doc._id);
+            await Run.deleteMany({ _id: { $in: ids } });
+        }
+
         res.json({ message: "Saved successfully" });
+
     } catch (err) {
         res.status(500).json({ error: err });
     }
@@ -53,10 +67,27 @@ app.get("/runs", async (req, res) => {
 
 // Save comparison
 app.post("/saveComparison", async (req, res) => {
-    await Comparison.create(req.body);
-    res.json({ message: "Comparison saved" });
-});
+    try {
+        await Comparison.create(req.body);
 
+        //latest 10 comparisons
+        const count = await Comparison.countDocuments();
+
+        if (count > 10) {
+            const oldest = await Comparison.find()
+                .sort({ date: 1 }) // oldest first
+                .limit(count - 10);
+
+            const ids = oldest.map(doc => doc._id);
+            await Comparison.deleteMany({ _id: { $in: ids } });
+        }
+
+        res.json({ message: "Comparison saved" });
+
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+});
 // Get comparisons
 app.get("/comparisons", async (req, res) => {
     const data = await Comparison.find();
