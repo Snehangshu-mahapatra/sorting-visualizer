@@ -7,12 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/sortingDB")
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err));
+.catch(err => console.log("Mongo error:", err));
 
-// Schema
 const RunSchema = new mongoose.Schema({
     algorithm: String,
     comparisons: Number,
@@ -36,7 +34,7 @@ const comparisonSchema = new mongoose.Schema({
 
 const Comparison = mongoose.model("Comparison", comparisonSchema);
 
-// Save API
+// Save run
 app.post("/save", async (req, res) => {
     try {
         const run = new Run(req.body);
@@ -47,23 +45,19 @@ app.post("/save", async (req, res) => {
     }
 });
 
-// Get API
+// Get runs
 app.get("/runs", async (req, res) => {
     const data = await Run.find();
     res.json(data);
 });
 
-// Start server
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
-});
-
+// Save comparison
 app.post("/saveComparison", async (req, res) => {
-    const data = req.body;
-    await Comparison.create(data);
+    await Comparison.create(req.body);
     res.json({ message: "Comparison saved" });
 });
 
+// Get comparisons
 app.get("/comparisons", async (req, res) => {
     const data = await Comparison.find();
     res.json(data);
@@ -74,8 +68,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log("Server running on port", PORT);
 });
-
-app.use(cors({
-  origin: "https://sorting-backend-zc9n.onrender.com",
-  credentials: true
-}));
